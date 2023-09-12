@@ -65,7 +65,7 @@ func TestMarshalPBJSONText(t *testing.T) {
 	o := PBJSONFrom(&_emptyObj)
 	data, err := o.MarshalText()
 	require.NoError(t, err)
-	assert.Equal(t, "", string(data))
+	assert.Equal(t, "{}", string(data))
 }
 
 func TestPBJSONScanValid(t *testing.T) {

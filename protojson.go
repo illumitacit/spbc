@@ -25,16 +25,16 @@ type PBJSON[T proto.Message] struct {
 }
 
 // Assert that expected interfaces are implemented
-var _ (json.Marshaler) = (*PBO[*emptypb.Empty])(nil)
-var _ (json.Unmarshaler) = (*PBO[*emptypb.Empty])(nil)
-var _ (encoding.TextMarshaler) = (*PBO[*emptypb.Empty])(nil)
-var _ (encoding.TextUnmarshaler) = (*PBO[*emptypb.Empty])(nil)
-var _ (driver.Valuer) = (*PBO[*emptypb.Empty])(nil)
-var _ (sql.Scanner) = (*PBO[*emptypb.Empty])(nil)
+var _ (json.Marshaler) = (*PBJSON[*emptypb.Empty])(nil)
+var _ (json.Unmarshaler) = (*PBJSON[*emptypb.Empty])(nil)
+var _ (encoding.TextMarshaler) = (*PBJSON[*emptypb.Empty])(nil)
+var _ (encoding.TextUnmarshaler) = (*PBJSON[*emptypb.Empty])(nil)
+var _ (driver.Valuer) = (*PBJSON[*emptypb.Empty])(nil)
+var _ (sql.Scanner) = (*PBJSON[*emptypb.Empty])(nil)
 
 // NewPBJSON creates a new PBJSON object.
-func NewPBJSON[T proto.Message](o T, valid bool) PBO[T] {
-	return PBO[T]{
+func NewPBJSON[T proto.Message](o T, valid bool) PBJSON[T] {
+	return PBJSON[T]{
 		Object: o,
 		Valid:  valid,
 	}
@@ -45,7 +45,7 @@ func NewPBJSON[T proto.Message](o T, valid bool) PBO[T] {
 // Note that proto.Message is inherently a pointer to a protobuf object and thus can be nil, but golang's type system
 // isn't smart enough to allow nil checks against the generic type since it can't guarantee it's a pointer. As such,
 // we have to resort to a lousy reflect check.
-func PBJSONFrom[T proto.Message](o T) PBO[T] {
+func PBJSONFrom[T proto.Message](o T) PBJSON[T] {
 	return NewPBJSON(o, !reflect.ValueOf(o).IsNil())
 }
 
@@ -101,7 +101,7 @@ func (o *PBJSON[T]) Scan(value interface{}) error {
 
 	bytes, isBytes := value.([]byte)
 	if !isBytes {
-		return fmt.Errorf("unsupported Scan, storing driver.Value type %T into type PBO", value)
+		return fmt.Errorf("unsupported Scan, storing driver.Value type %T into type PBJSON", value)
 	}
 
 	return o.UnmarshalJSON(bytes)
