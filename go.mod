@@ -1,4 +1,4 @@
-module github.com/fensak-io/spbc
+module github.com/illumitacit/spbc
 
 go 1.19
 
